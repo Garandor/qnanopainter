@@ -7,6 +7,5 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 REQUIRED Gui Quick)
-find_package(OpenGL REQUIRED)
 
 add_subdirectory(libqnanopainter)

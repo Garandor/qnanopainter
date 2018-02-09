@@ -21,11 +21,7 @@ set(QNANOPAINTER_SRC
         "qnanofont.cpp"
         "qnanoradialgradient.cpp"
         "qnanoboxgradient.cpp"
-        "private/qnanobackendgles2.cpp"
-        "private/qnanobackendgles3.cpp"
-        "private/qnanobackendgl2.cpp"
-        "private/qnanobackendgl3.cpp"
-        "nanovg/nanovg.c"
+	"nanovg/nanovg.c"
         )
 
 
@@ -40,19 +36,58 @@ set(QNANOPAINTER_HDR
         "qnanoquickitem.h"
         "qnanoquickitempainter.h"
         "qnanoradialgradient.h"
+	"private/qnanobrush.h"
+	"private/qnanodataelement.h"
+	"private/qnanobackend.h"
+	"private/qnanobackendfactory.h"
+	"nanovg/nanovg.h"
         )
+
+    if(WIN32)
+	    list(APPEND QNANOPAINTER_SRC 
+	    private/qnanobackendgles2.cpp
+	    private/qnanobackendgles3.cpp
+	    )
+	    list(APPEND QNANOPAINTER_HDR
+	    private/qnanobackendgles2.h
+	    private/qnanobackendgles3.h
+		    )
+    else()
+	    list(APPEND QNANOPAINTER_SRC 
+	    private/qnanobackendgl2.cpp
+	    private/qnanobackendgl3.cpp
+	    )
+	    list(APPEND QNANOPAINTER_HDR
+	    private/qnanobackendgl2.h
+	    private/qnanobackendgl3.h
+		    )
+    endif()
+
 
 add_library(qnanopainter
 	${QNANOPAINTER_SRC}
 	${QNANOPAINTER_HDR}
 	)
 
+    #Windows does not provide OpenGL 2 or 3, need to use GLESv2 / angle
+    if(WIN32)
+        find_library(GLESV2 REQUIRED)
+        target_link_libraries(qnanopainter
+            libGLESV2
+            )
+    else()
+        find_package(OpenGL)
+        target_link_libraries(qnanopainter
+            OpenGL::GL
+            )
+    endif()
+
 target_link_libraries(qnanopainter
-	OpenGL::GL
         Qt5::Quick
+        Qt5::Gui
         )
 
 target_include_directories(qnanopainter PRIVATE
-	${OPENGL_INCLUDE_DIR}
-	${Qt5Quick_INCLUDE_DIRS}
+        ${Qt5Quick_INCLUDE_DIRS}
+        ${Qt5Gui_INCLUDE_DIRS}
         )
