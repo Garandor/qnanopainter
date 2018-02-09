@@ -43,13 +43,20 @@ set(QNANOPAINTER_HDR
 	"nanovg/nanovg.h"
         )
 
+    if(!UNIX)
+            list(APPEND QNANOPAINTER_SRC
+            "private/qnanobackendgles3.cpp"
+            )
+            list(APPEND QNANOPAINTER_HDR
+            "private/qnanobackendgles3.h"
+                    )
+
+    endif()
 	    list(APPEND QNANOPAINTER_SRC 
 	    "private/qnanobackendgles2.cpp"
-	    "private/qnanobackendgles3.cpp"
 	    )
 	    list(APPEND QNANOPAINTER_HDR
 	    "private/qnanobackendgles2.h"
-	    "private/qnanobackendgles3.h"
 		    )
 	    list(APPEND QNANOPAINTER_SRC 
 	    "private/qnanobackendgl2.cpp"
