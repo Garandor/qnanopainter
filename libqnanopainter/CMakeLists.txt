@@ -43,25 +43,22 @@ set(QNANOPAINTER_HDR
 	"nanovg/nanovg.h"
         )
 
-    if(WIN32)
 	    list(APPEND QNANOPAINTER_SRC 
-	    private/qnanobackendgles2.cpp
-	    private/qnanobackendgles3.cpp
+	    "private/qnanobackendgles2.cpp"
+	    "private/qnanobackendgles3.cpp"
 	    )
 	    list(APPEND QNANOPAINTER_HDR
-	    private/qnanobackendgles2.h
-	    private/qnanobackendgles3.h
+	    "private/qnanobackendgles2.h"
+	    "private/qnanobackendgles3.h"
 		    )
-    else()
 	    list(APPEND QNANOPAINTER_SRC 
-	    private/qnanobackendgl2.cpp
-	    private/qnanobackendgl3.cpp
+	    "private/qnanobackendgl2.cpp"
+	    "private/qnanobackendgl3.cpp"
 	    )
 	    list(APPEND QNANOPAINTER_HDR
-	    private/qnanobackendgl2.h
-	    private/qnanobackendgl3.h
+	    "private/qnanobackendgl2.h"
+	    "private/qnanobackendgl3.h"
 		    )
-    endif()
 
 
 add_library(qnanopainter
@@ -69,12 +66,21 @@ add_library(qnanopainter
 	${QNANOPAINTER_HDR}
 	)
 
-    #Windows does not provide OpenGL 2 or 3, need to use GLESv2 / angle
+    #Windows does not provide OpenGL 2 or 3
+    #Since Qt is assumed to be built -dynamic,
+    #i.e. does not link to either OpenGL or GLES,
+    #We need to do that manually 
     if(WIN32)
-        find_library(GLESV2 REQUIRED)
-        target_link_libraries(qnanopainter
-            libGLESV2
-            )
+	    find_library(glesd NAMES libglesv2d  
+		    HINTS $ENV{QT_DIR}/lib
+		    )
+	    find_library(gles NAMES libglesv2 
+		    HINTS $ENV{QT_DIR}/lib
+		    )
+	    target_link_libraries(qnanopainter
+	            debug ${glesd}
+	            optimized ${gles}
+	  	    )
     else()
         find_package(OpenGL)
         target_link_libraries(qnanopainter
