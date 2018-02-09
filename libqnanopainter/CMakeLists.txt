@@ -49,10 +49,10 @@ add_library(qnanopainter
 
 target_link_libraries(qnanopainter
 	OpenGL::GL
-        Qt5::Gui
         Qt5::Quick
         )
 
 target_include_directories(qnanopainter PRIVATE
-        ${OPENGL_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIR}
+	${Qt5Quick_INCLUDE_DIRS}
         )
