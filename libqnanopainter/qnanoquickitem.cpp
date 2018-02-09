@@ -150,20 +150,20 @@
     Constructs a QNanoQuickItem with the given \a parent item.
 */
 
-QNanoQuickItem::QNanoQuickItem(QQuickItem *parent)
+QNanoQuickItem::QNanoQuickItem(QQuickItem* parent)
 #ifdef QNANO_USE_RENDERNODE
-  : QQuickItem(parent)
+    : QQuickItem(parent)
 #else
-  : QQuickFramebufferObject(parent)
+    : QQuickFramebufferObject(parent)
 #endif
-  , m_fillColor(Qt::transparent)
-  , m_pixelAlign(QNanoQuickItem::PixelAlignNone)
-  , m_pixelAlignText(QNanoQuickItem::PixelAlignNone)
-  , m_highQualityRendering(false)
-  , m_acceptedMouseButtons(Qt::LeftButton)
-  , m_mouseEnabled(false)
-  , m_textureWidth(-1)
-  , m_textureHeight(-1)
+    , m_fillColor(Qt::transparent)
+    , m_pixelAlign(QNanoQuickItem::PixelAlignNone)
+    , m_pixelAlignText(QNanoQuickItem::PixelAlignNone)
+    , m_highQualityRendering(false)
+    , m_acceptedMouseButtons(Qt::LeftButton)
+    , m_mouseEnabled(false)
+    , m_textureWidth(-1)
+    , m_textureHeight(-1)
 {
 #ifdef QNANO_USE_RENDERNODE
     setFlag(ItemHasContents, true);
@@ -178,7 +178,6 @@ QNanoQuickItem::QNanoQuickItem(QQuickItem *parent)
     setMirrorVertically(true);
 #endif
 #endif
-
 }
 
 /*!
@@ -363,7 +362,7 @@ QColor QNanoQuickItem::fillColor() const
     \sa fillColor()
 */
 
-void QNanoQuickItem::setFillColor(const QColor &color)
+void QNanoQuickItem::setFillColor(const QColor& color)
 {
     if (m_fillColor == color)
         return;
@@ -540,12 +539,12 @@ void QNanoQuickItem::setTextureHeight(int height)
     update();
 }
 
-/*!
+    /*!
    \internal
 */
 
 #ifndef QNANO_USE_RENDERNODE
-QQuickFramebufferObject::Renderer *QNanoQuickItem::createRenderer() const
+QQuickFramebufferObject::Renderer* QNanoQuickItem::createRenderer() const
 {
     return createItemPainter();
 }
@@ -555,7 +554,7 @@ QQuickFramebufferObject::Renderer *QNanoQuickItem::createRenderer() const
    \internal
 */
 
-void QNanoQuickItem::setContextName(const QString &name)
+void QNanoQuickItem::setContextName(const QString& name)
 {
     if (m_contextName != name) {
         m_contextName = name;
@@ -567,7 +566,7 @@ void QNanoQuickItem::setContextName(const QString &name)
    \internal
 */
 
-void QNanoQuickItem::setBackendName(const QString &name)
+void QNanoQuickItem::setBackendName(const QString& name)
 {
     if (m_backendName != name) {
         m_backendName = name;
@@ -575,24 +574,23 @@ void QNanoQuickItem::setBackendName(const QString &name)
     }
 }
 
-/*!
+    /*!
    \internal
 */
 
 #ifdef QNANO_USE_RENDERNODE
-QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
+QSGNode* QNanoQuickItem::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNodeData* nodeData)
 {
     Q_UNUSED(nodeData)
-    QNanoQuickItemPainter *n = static_cast<QNanoQuickItemPainter *>(node);
+    QNanoQuickItemPainter* n = static_cast<QNanoQuickItemPainter*>(node);
     if (!n) {
         n = createItemPainter();
     }
     n->synchronizePainter(this);
-    n->markDirty(QSGNode::DirtyMaterial);
     return n;
 }
 
-void QNanoQuickItem::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
+void QNanoQuickItem::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData& value)
 {
     // When item opacity, rotation etc. change call update to synchronize properties with painter
     update();
@@ -602,11 +600,11 @@ void QNanoQuickItem::itemChange(QQuickItem::ItemChange change, const QQuickItem:
 // Flip FBO, see QTBUG-41073
 // With Qt 5.6 this is replaced with setMirrorVertically
 #elif QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
+QSGNode* QNanoQuickItem::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNodeData* nodeData)
 {
     if (!node) {
         node = QQuickFramebufferObject::updatePaintNode(node, nodeData);
-        QSGSimpleTextureNode *n = static_cast<QSGSimpleTextureNode *>(node);
+        QSGSimpleTextureNode* n = static_cast<QSGSimpleTextureNode*>(node);
         if (n)
             n->setTextureCoordinatesTransform(QSGSimpleTextureNode::MirrorVertically);
         return node;
